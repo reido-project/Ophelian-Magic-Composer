@@ -3,6 +3,7 @@ package app.views.panels;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -16,18 +17,18 @@ import app.models.enums.Target;
 import app.models.types.MagicType;
 
 public class SpellRegistryPanel extends JPanel {
-    private JComboBox<MagicType> magicTypeCombo;
-    private JTextField spellInput;
-    private JComboBox<Target> targetCombo;
-    private JCheckBox chckbxContact;
-    private JCheckBox chckbxShortRange;
-    private JCheckBox chckbxLongRange;
-    private JCheckBox chckbxAreaOfEffect;
-    private JTextField proficiencyInput;
-    private JTextField costInput;
-    private JTextArea mechanismInput;
-    private JTextArea referenceInput;
-    private JButton btnSpellSubmit;
+    private final JComboBox<MagicType> magicTypeCombo;
+    private final JTextField spellInput;
+    private final JComboBox<Target> targetCombo;
+    private final JCheckBox chckbxContact;
+    private final JCheckBox chckbxShortRange;
+    private final JCheckBox chckbxLongRange;
+    private final JCheckBox chckbxAreaOfEffect;
+    private final JTextField proficiencyInput;
+    private final JTextField costInput;
+    private final JTextArea mechanismInput;
+    private final JTextArea referenceInput;
+    private final JButton btnSpellSubmit;
 
     public SpellRegistryPanel() {
         setBackground(new Color(36, 31, 49));
@@ -141,7 +142,7 @@ public class SpellRegistryPanel extends JPanel {
         add(btnSpellSubmit);
     }
 
-    // Getters & Listeners
+    // Getters
     public JComboBox<MagicType> getMagicTypeCombo() { return magicTypeCombo; }
     public String getSpellInput() { return spellInput.getText(); }
     public Target getTargetComboValue() { return (Target) targetCombo.getSelectedItem(); }
@@ -153,5 +154,11 @@ public class SpellRegistryPanel extends JPanel {
     public String getCostInput() { return costInput.getText(); }
     public String getMechanismInput() { return mechanismInput.getText(); }
     public String getReferenceInput() { return referenceInput.getText(); }
+
+    // Setters
+    public void updateMagicTypes(List<MagicType> magicTypes) {
+        magicTypeCombo.setModel(new DefaultComboBoxModel<>(magicTypes.toArray(new MagicType[0])));
+    }
+
     public void addSubmitListener(ActionListener listener) { btnSpellSubmit.addActionListener(listener); }
 }

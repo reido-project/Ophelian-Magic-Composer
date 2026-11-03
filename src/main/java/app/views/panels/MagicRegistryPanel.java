@@ -5,13 +5,8 @@ import app.models.types.MagicClass;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import java.util.List;
+import javax.swing.*;
 
 public class MagicRegistryPanel extends JPanel {
     private final JComboBox<MagicClass> magicClassCombo;
@@ -78,10 +73,16 @@ public class MagicRegistryPanel extends JPanel {
         add(btnMagicSubmit);
     }
 
-    // Getters & Listeners
+    // Getters
     public JComboBox<MagicClass> getMagicClassCombo() { return magicClassCombo; }
     public String getMagicTypeInput() { return magicTypeInput.getText(); }
     public String getMagicLevelInput() { return magicLevelInput.getText(); }
     public String getDescriptionInput() { return descriptionInput.getText(); }
+
+    // Setters
+    public void updateMagicClassCombo(List<MagicClass> magicClasses) {
+        magicClassCombo.setModel(new DefaultComboBoxModel<>(magicClasses.toArray(new MagicClass[0])));
+    }
+
     public void addSubmitListener(ActionListener listener) { btnMagicSubmit.addActionListener(listener); }
 }

@@ -1,8 +1,11 @@
 package app.views.panels;
 
+import app.models.types.CharacterMagicType;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;

@@ -1,16 +1,14 @@
 package app.controllers;
 
+import app.models.interfaces.Refreshable;
 import app.views.panels.ActionPanel;
 
 public class ActionController {
-    private final ActionPanel view;
+    private final Refreshable[] consumer;
 
-    public ActionController(ActionPanel view) {
-        this.view = view;
-        init();
-    }
+    public ActionController(ActionPanel view, Refreshable[] consumer) {
+        this.consumer = consumer;
 
-    private void init(){
         view.addRefreshListener(e -> {
             handleRefresh();
         });
@@ -22,10 +20,18 @@ public class ActionController {
         view.addExitListener(e -> {
             System.exit(0);
         });
+
+        for(Refreshable refreshable : consumer) {
+            refreshable.setGlobalRefresh(this::handleRefresh);
+        }
+
+        handleRefresh();
     }
 
     private void handleRefresh(){
-
+        for(Refreshable refreshable : consumer){
+            refreshable.refresh();
+        }
     }
 
     private void handleExport(){

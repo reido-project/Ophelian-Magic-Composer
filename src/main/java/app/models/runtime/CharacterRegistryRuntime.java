@@ -6,49 +6,39 @@ import app.models.types.CharacterMagicType;
 import java.util.List;
 
 public class CharacterRegistryRuntime {
-    private List<Character> characters;
-    private List<CharacterMagicType> magicTypes;
-    private int characterLastIndex;
-    private int magicTypeLastIndex;
+    private final List<Character> characters;
+    private final List<CharacterMagicType> magicTypes;
+    private Character selectedCharacter;
 
     public CharacterRegistryRuntime(List<Character> characters, List<CharacterMagicType> magicTypes) {
         this.characters = characters;
         this.magicTypes = magicTypes;
-        this.characterLastIndex = characters.size() - 1;
-        this.magicTypeLastIndex = magicTypes.size() - 1;
-    }
 
-    public void addCharacter(Character character) {
-        characters.add(character);
-    }
-
-    public void addMagicType(CharacterMagicType magicType) {
-        magicTypes.add(magicType);
     }
 
     public List<Character> getCharacters() {
         return characters;
     }
 
+    public void setCharacters(List<Character> charactersUpdate) {
+        characters.clear();
+        characters.addAll(charactersUpdate);
+    }
+
     public List<CharacterMagicType> getMagicTypes() {
         return magicTypes;
     }
 
-    public void setCharacters(List<Character> characters) {
-        this.characters = characters;
-        this.characterLastIndex = characters.size() - 1;
+    public void setMagicTypes(List<CharacterMagicType> magicTypesUpdate) {
+        magicTypes.clear();
+        magicTypes.addAll(magicTypesUpdate);
     }
 
-    public void setMagicTypes(List<CharacterMagicType> magicTypes) {
-        this.magicTypes = magicTypes;
-        this.magicTypeLastIndex = magicTypes.size() - 1;
+    public Character getSelectedCharacter() {
+        return selectedCharacter;
     }
 
-    public int getCharacterLastIndex() {
-        return characterLastIndex;
-    }
-
-    public int getMagicTypeLastIndex() {
-        return magicTypeLastIndex;
+    public void setSelectedCharacter(Character character) {
+        this.selectedCharacter = character;
     }
 }

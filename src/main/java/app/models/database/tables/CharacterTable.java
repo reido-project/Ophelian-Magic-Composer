@@ -10,13 +10,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CharacterTable extends Database {
+    public void write(Character chara) {
+        connect();
+
+        String sql = String.format("""
+                INSERT OR REPLACE INTO characters (name, role, age, description) VALUES ('%s', '%s', %d, '%s');
+                """, chara.getName(), chara.getRole().getName(), chara.getAge(), chara.getDescription());
+
+        query(sql);
+
+        disconnect();
+    }
+
     public void write(List<Character> characters) {
         connect();
 
         for(Character chara : characters) {
             String sql = String.format("""
-                INSERT INTO characters (name, role, age, description) VALUES ('%s', '%s', %d, '%s');
-                """, chara.name(), chara.role().getName(), chara.age(), chara.description());
+                INSERT OR REPLACE INTO characters (name, role, age, description) VALUES ('%s', '%s', %d, '%s');
+                """, chara.getName(), chara.getRole().getName(), chara.getAge(), chara.getDescription());
 
             query(sql);
         }
@@ -55,5 +67,29 @@ public class CharacterTable extends Database {
         }
 
         return result;
+    }
+
+    public int fetchID(String name){
+        connect();
+
+        String sql = String.format("SELECT id FROM character_magic_type WHERE name = '%s';", name);
+
+        ResultSet rs = view(sql);
+
+        if(rs == null) {
+            return -1;
+        }
+
+        try{
+            rs.next();
+            return rs.getInt("id");
+        }catch(SQLException e){
+            System.err.println("Error while trying to fetch Characters from database: " + e.getMessage());
+        }
+        finally {
+            disconnect();
+        }
+
+        return -1;
     }
 }

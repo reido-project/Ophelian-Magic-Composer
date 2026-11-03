@@ -10,13 +10,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CharacterMagicTypeTable extends Database {
+    public void write(CharacterMagicType cmt) {
+        if(cmt == null) return;
+
+        connect();
+
+        String sql = String.format("""
+                    INSERT OR REPLACE INTO character_magic_types (character_id, magic_type_id, slot, proficiency) VALUES (%d, %d, '%s', %d);
+                    """, cmt.getCharacterID(), cmt.getMagicTypeID(), cmt.getSlot().getName(), cmt.getProficiency());
+
+        query(sql);
+
+        disconnect();
+    }
+
     public void write(List<CharacterMagicType> characterMagicTypes) {
         connect();
 
         for (CharacterMagicType cmt : characterMagicTypes) {
             String sql = String.format("""
-                    INSERT INTO character_magic_types (character_id, magic_type_id, slot, proficiency) VALUES (%d, %d, '%s', %d);
-                    """, cmt.characterID(), cmt.magicTypeID(), cmt.slot().getName(), cmt.proficiency());
+                    INSERT OR REPLACE INTO character_magic_types (character_id, magic_type_id, slot, proficiency) VALUES (%d, %d, '%s', %d);
+                    """, cmt.getCharacterID(), cmt.getMagicTypeID(), cmt.getSlot().getName(), cmt.getProficiency());
 
             query(sql);
         }

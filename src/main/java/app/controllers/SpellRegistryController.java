@@ -2,6 +2,7 @@ package app.controllers;
 
 import app.models.database.tables.SpellTable;
 import app.models.enums.Target;
+import app.models.interfaces.Refreshable;
 import app.models.runtime.MagicRegistryRuntime;
 import app.models.runtime.SpellRegistryRuntime;
 import app.models.types.MagicType;
@@ -11,23 +12,31 @@ import app.views.panels.SpellRegistryPanel;
 
 import javax.swing.*;
 
-public class SpellRegistryController {
+public class SpellRegistryController implements Refreshable {
     private final SpellRegistryPanel view;
     private final SpellRegistryRuntime runtime;
     private final SpellTable table;
+    private final MagicRegistryRuntime magicRegistryRuntime;
+
+    private Runnable globalRefresh;
 
     public SpellRegistryController(SpellRegistryPanel view, SpellRegistryRuntime runtime, SpellTable table, MagicRegistryRuntime magicRegistryRuntime) {
         this.view = view;
         this.runtime = runtime;
         this.table = table;
-
-        JComboBox<MagicType> combo = view.getMagicTypeCombo();
-
-        for(MagicType type : magicRegistryRuntime.magicTypes()){
-            combo.addItem(type);
-        }
+        this.magicRegistryRuntime = magicRegistryRuntime;
 
         view.addSubmitListener(e -> handleSpellSubmit());
+    }
+
+    @Override
+    public void refresh() {
+        view.updateMagicTypes(magicRegistryRuntime.magicTypes());
+    }
+
+    @Override
+    public void setGlobalRefresh(Runnable globalRefresh) {
+        this.globalRefresh = globalRefresh;
     }
 
     private void handleSpellSubmit(){
@@ -56,14 +65,13 @@ public class SpellRegistryController {
             if(proficiency <= 0 || proficiency > 3){
                 throw new IllegalArgumentException("Proficiency level must be between 1 and 3.");
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(view, "Please enter a valid proficiency level (1 to 3)", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         try {
-            cost = Integer.parseInt(view.getProficiencyInput().trim());
-
+            cost = Integer.parseInt(view.getCostInput().trim());
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(view, "Please enter a valid cost using numeric value", "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -71,5 +79,6 @@ public class SpellRegistryController {
 
         table.write(new Spell(typeID, name, target, contact, shortRange,  longRange, aoe, proficiency, cost, mechanism, reference));
         runtime.set(table.fetch());
+        globalRefresh.run();
     }
 }

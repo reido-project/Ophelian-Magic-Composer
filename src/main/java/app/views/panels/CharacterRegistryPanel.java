@@ -3,6 +3,7 @@ package app.views.panels;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -12,19 +13,20 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import app.models.enums.Role;
+import app.models.types.MagicType;
 
 public class CharacterRegistryPanel extends JPanel {
-    private JTextField characterNameInput;
-    private JComboBox<Role> characterRoleCombo;
-    private JTextField characterAgeInput;
-    private JComboBox<Object> primaryMagicTypeCombo;
-    private JTextField primaryProficiencyInput;
-    private JComboBox<Object> secondaryMagicTypeCombo;
-    private JTextField secondaryProficiencyInput;
-    private JComboBox<Object> tertiaryMagicTypeCombo;
-    private JTextField tertiaryProficiencyInput;
-    private JTextArea cDescriptionInput;
-    private JButton btnCharacterSubmit;
+    private final JTextField characterNameInput;
+    private final JComboBox<Role> characterRoleCombo;
+    private final JTextField characterAgeInput;
+    private final JComboBox<MagicType> primaryMagicTypeCombo;
+    private final JTextField primaryProficiencyInput;
+    private final JComboBox<MagicType> secondaryMagicTypeCombo;
+    private final JTextField secondaryProficiencyInput;
+    private final JComboBox<MagicType> tertiaryMagicTypeCombo;
+    private final JTextField tertiaryProficiencyInput;
+    private final JTextArea cDescriptionInput;
+    private final JButton btnCharacterSubmit;
 
     public CharacterRegistryPanel() {
         setBackground(new Color(36, 31, 49));
@@ -127,16 +129,24 @@ public class CharacterRegistryPanel extends JPanel {
         add(btnCharacterSubmit);
     }
 
-    // Getters & Listeners
-    public String getCharacterNameInput() { return characterNameInput.getText(); }
-    public Role getCharacterRoleValue() { return (Role) characterRoleCombo.getSelectedItem(); }
-    public String getCharacterAgeInput() { return characterAgeInput.getText(); }
-    public JComboBox<Object> getPrimaryMagicTypeCombo() { return primaryMagicTypeCombo; }
-    public String getPrimaryProficiencyInput() { return primaryProficiencyInput.getText(); }
-    public JComboBox<Object> getSecondaryMagicTypeCombo() { return secondaryMagicTypeCombo; }
-    public String getSecondaryProficiencyInput() { return secondaryProficiencyInput.getText(); }
-    public JComboBox<Object> getTertiaryMagicTypeCombo() { return tertiaryMagicTypeCombo; }
-    public String getTertiaryProficiencyInput() { return tertiaryProficiencyInput.getText(); }
-    public String getCDescriptionInput() { return cDescriptionInput.getText(); }
+    // Getters
+    public String getNameInputValue() { return characterNameInput.getText(); }
+    public Role getRoleValue() { return (Role) characterRoleCombo.getSelectedItem(); }
+    public String getAgeInputValue() { return characterAgeInput.getText(); }
+    public MagicType getPrimaryMagicType() { return (MagicType) primaryMagicTypeCombo.getSelectedItem(); }
+    public String getPrimaryProficiencyInputValue() { return primaryProficiencyInput.getText(); }
+    public MagicType getSecondaryMagicType() { return (MagicType) secondaryMagicTypeCombo.getSelectedItem(); }
+    public String getSecondaryProficiencyInputValue() { return secondaryProficiencyInput.getText(); }
+    public MagicType getTertiaryMagicType() { return (MagicType) tertiaryMagicTypeCombo.getSelectedItem(); }
+    public String getTertiaryProficiencyInputValue() { return tertiaryProficiencyInput.getText(); }
+    public String getDescriptionInputValue() { return cDescriptionInput.getText(); }
+
+    // Setters
+    public void updateMagicTypeCombo(List<MagicType> magicTypes) {
+        primaryMagicTypeCombo.setModel(new DefaultComboBoxModel<>(magicTypes.toArray(new MagicType[0])));
+        secondaryMagicTypeCombo.setModel(new DefaultComboBoxModel<>(magicTypes.toArray(new MagicType[0])));
+        tertiaryMagicTypeCombo.setModel(new DefaultComboBoxModel<>(magicTypes.toArray(new MagicType[0])));
+    }
+
     public void addSubmitListener(ActionListener listener) { btnCharacterSubmit.addActionListener(listener); }
 }

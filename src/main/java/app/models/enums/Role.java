@@ -1,6 +1,7 @@
 package app.models.enums;
 
 public enum Role {
+    Unspecified("Unspecified"),
     Harbinger("Harbinger"),
     Ophelian("Ophelian"),
     Human("Human");
