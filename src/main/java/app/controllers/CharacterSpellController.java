@@ -44,6 +44,8 @@ public class CharacterSpellController implements Refreshable {
 
     @Override
     public void refresh() {
+        runtime.setSpells(table.fetch());
+
         Character sc = runtime.getSelectedCharacter();
 
         if(sc != null){
@@ -128,7 +130,6 @@ public class CharacterSpellController implements Refreshable {
 
         table.deleteByCharacterID(selectedCharacter.getID());
         table.write(characterSpells);
-        runtime.setSpells(table.fetch());
         globalRefresh.run();
     }
 }

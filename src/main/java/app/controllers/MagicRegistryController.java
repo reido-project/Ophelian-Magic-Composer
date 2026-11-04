@@ -27,6 +27,7 @@ public class MagicRegistryController implements Refreshable {
 
     @Override
     public void refresh() {
+        runtime.setMagicTypes(table.fetch());
         view.updateMagicClassCombo(runtime.magicClasses());
     }
 
@@ -60,7 +61,6 @@ public class MagicRegistryController implements Refreshable {
         }
 
         table.write(new MagicType(classID, name, level, description));
-        runtime.setMagicTypes(table.fetch());
         globalRefresh.run();
     }
 }

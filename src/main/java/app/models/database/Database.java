@@ -1,5 +1,7 @@
 package app.models.database;
 
+import app.Config;
+
 import java.sql.*;
 
 public abstract class Database {
@@ -8,7 +10,7 @@ public abstract class Database {
 
     protected void connect() {
         try {
-            final String url = "jdbc:sqlite:src/main/java/database.sqlite";
+            final String url = "jdbc:sqlite:" + Config.SQLITE_DIR;
             conn = DriverManager.getConnection(url);
             stmt = conn.createStatement();
         } catch (Exception e) {

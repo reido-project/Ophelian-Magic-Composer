@@ -1,9 +1,9 @@
 package tools;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
+import app.Config;
 
 class Connector {
     private Connection conn;
@@ -11,7 +11,7 @@ class Connector {
 
     void connect() {
         try {
-            final String url = "jdbc:sqlite:src/main/java/database.sqlite";
+            final String url = "jdbc:sqlite:" + Config.SQLITE_DIR;
             conn = DriverManager.getConnection(url);
             stmt = conn.createStatement();
         } catch (Exception e) {
@@ -50,31 +50,34 @@ class Connector {
         return result;
     }
 
-    void executeSQLFile(String filePath) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath));
-             Statement statement = this.conn.createStatement()) {
+    void executeSQLFile(String resourcePath) {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(resourcePath)) {
 
-            StringBuilder sqlBuilder = new StringBuilder();
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                if (line.startsWith("--") || line.isEmpty()) {
-                    continue;
-                }
-
-                sqlBuilder.append(line).append(" ");
-
-                if (line.endsWith(";")) {
-                    String sql = sqlBuilder.toString().trim();
-                    statement.execute(sql);
-
-                    sqlBuilder.setLength(0);
-                }
+            if (inputStream == null) {
+                throw new IllegalStateException("SQL file not found on classpath: " + resourcePath);
             }
 
-        } catch (IOException | SQLException e) {
-            throw new RuntimeException(e);
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+                 Statement statement = conn.createStatement()) {
+
+                StringBuilder sqlBuilder = new StringBuilder();
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    line = line.trim();
+                    if (line.startsWith("--") || line.isEmpty()) continue;
+
+                    sqlBuilder.append(line).append(" ");
+
+                    if (line.endsWith(";")) {
+                        statement.execute(sqlBuilder.toString().trim());
+                        sqlBuilder.setLength(0);
+                    }
+                }
+                System.out.println("Successfully executed: " + resourcePath);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error executing SQL file (" + resourcePath + "): " + e.getMessage(), e);
         }
     }
 }

@@ -9,6 +9,7 @@ import app.models.runtime.SpellRegistryRuntime;
 import app.models.types.*;
 import app.views.ComposerFrame;
 import app.views.panels.*;
+import tools.Tool;
 
 import java.awt.EventQueue;
 
@@ -16,6 +17,13 @@ public class Main {
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
+                // Generate SQLite
+                Tool tool = new Tool();
+
+                if (tool.needsMigration()) {
+                    tool.migrateAndSeed();
+                }
+
                 // Initialize Tables
                 MagicClassTable magicClassTable = new MagicClassTable();
                 MagicTypeTable magicTypeTable = new MagicTypeTable();
@@ -71,7 +79,7 @@ public class Main {
                 };
 
                 // Initialize Action Control
-                new ActionController(mainActionPanel, controllers);
+                new ActionController(mainActionPanel, tool, controllers);
 
                 // Initialize Frame
                 ComposerFrame frame = new ComposerFrame(

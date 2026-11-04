@@ -2,19 +2,20 @@ package app.controllers;
 
 import app.models.interfaces.Refreshable;
 import app.views.panels.ActionPanel;
+import tools.Tool;
+
+import javax.swing.*;
 
 public class ActionController {
+    private final Tool tool;
     private final Refreshable[] consumer;
 
-    public ActionController(ActionPanel view, Refreshable[] consumer) {
+    public ActionController(ActionPanel view, Tool tool, Refreshable[] consumer) {
+        this.tool = tool;
         this.consumer = consumer;
 
-        view.addRefreshListener(e -> {
-            handleRefresh();
-        });
-
-        view.addExportListener(e -> {
-            handleExport();
+        view.addResetListener(e -> {
+            handleReset();
         });
 
         view.addExitListener(e -> {
@@ -34,7 +35,8 @@ public class ActionController {
         }
     }
 
-    private void handleExport(){
-
+    private void handleReset(){
+        tool.migrateAndSeed();
+        handleRefresh();
     }
 }

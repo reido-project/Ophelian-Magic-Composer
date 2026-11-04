@@ -5,34 +5,21 @@ import app.views.panels.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.io.Serial;
 
 public class ComposerFrame extends JFrame {
 
+    @Serial
     private static final long serialVersionUID = 1L;
-    private JPanel contentPane;
-
-    // Referensi Panel-panel modular
-    private MagicRegistryPanel magicRegistryPanel;
-    private SpellRegistryPanel spellRegistryPanel;
-    private CharacterRegistryPanel characterRegistryPanel;
-    private CharacterSelectorPanel characterSelectorPanel;
-    private CharacterSpellPanel characterSpellPanel;
-    private ActionPanel mainActionPanel;
 
     public ComposerFrame(MagicRegistryPanel magicRegistryPanel,  SpellRegistryPanel spellRegistryPanel, CharacterRegistryPanel characterRegistryPanel, CharacterSelectorPanel characterSelectorPanel, CharacterSpellPanel characterSpellPanel, ActionPanel mainActionPanel) {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 1140, 832);
         setResizable(false);
         setTitle("Ophelian Magic Composer");
+        setIconImage(Toolkit.getDefaultToolkit().getImage(ComposerFrame.class.getResource("/icon.png")));
 
-        this.magicRegistryPanel = magicRegistryPanel;
-        this.spellRegistryPanel = spellRegistryPanel;
-        this.characterRegistryPanel = characterRegistryPanel;
-        this.characterSelectorPanel = characterSelectorPanel;
-        this.characterSpellPanel = characterSpellPanel;
-        this.mainActionPanel = mainActionPanel;
-
-        contentPane = new JPanel();
+        JPanel contentPane = new JPanel();
         contentPane.setBackground(new Color(18, 18, 18));
         contentPane.setBorder(new EmptyBorder(30, 30, 30, 30));
         setContentPane(contentPane);
@@ -63,12 +50,4 @@ public class ComposerFrame extends JFrame {
         mainActionPanel.setBounds(389, 610, 352, 174);
         contentPane.add(mainActionPanel);
     }
-
-    // Getter
-    public MagicRegistryPanel getMagicRegistryPanel() { return magicRegistryPanel; }
-    public SpellRegistryPanel getSpellRegistryPanel() { return spellRegistryPanel; }
-    public CharacterRegistryPanel getCharacterRegistryPanel() { return characterRegistryPanel; }
-    public CharacterSelectorPanel getCharacterSelectorPanel() { return characterSelectorPanel; }
-    public CharacterSpellPanel getCharacterSpellPanel() { return characterSpellPanel; }
-    public ActionPanel getMainActionPanel() { return mainActionPanel; }
 }

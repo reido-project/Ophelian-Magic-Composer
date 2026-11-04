@@ -31,6 +31,7 @@ public class SpellRegistryController implements Refreshable {
 
     @Override
     public void refresh() {
+        runtime.set(table.fetch());
         view.updateMagicTypes(magicRegistryRuntime.magicTypes());
     }
 
@@ -78,7 +79,6 @@ public class SpellRegistryController implements Refreshable {
         }
 
         table.write(new Spell(typeID, name, target, contact, shortRange,  longRange, aoe, proficiency, cost, mechanism, reference));
-        runtime.set(table.fetch());
         globalRefresh.run();
     }
 }

@@ -9,18 +9,19 @@ import tools.seeder.seeds.MagicClassSeed;
 import tools.seeder.seeds.MagicTypeSeed;
 import tools.seeder.seeds.SpellSeed;
 
-public class Main extends Connector {
-    public static void main(String[] args) {
-        Main app = new Main();
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-        app.connect();
+public class Tool extends Connector {
+    public void migrateAndSeed() {
+        connect();
 
         // === Migrate ===
-        String up = "src/main/java/tools/migration/Up.sql";
-        String down = "src/main/java/tools/migration/Down.sql";
+        String up = "migration/up.sql";
+        String down = "migration/down.sql";
 
-        app.executeSQLFile(down);
-        app.executeSQLFile(up);
+        executeSQLFile(down);
+        executeSQLFile(up);
 
         // === Seeds ===
         // 1. Magic Class
@@ -29,7 +30,7 @@ public class Main extends Connector {
             String sql = String.format("""
                 INSERT INTO magic_class (id, name) VALUES (%d, '%s');
                 """, magicClass.id(), escapeSql(magicClass.name()));
-            app.query(sql);
+            query(sql);
         }
 
         // 2. Magic Type
@@ -38,28 +39,13 @@ public class Main extends Connector {
             String sql = String.format("""
                 INSERT INTO magic_types (id, magic_class_id, name, magic_level, description) VALUES (%d, %d, '%s', %d, '%s');
                 """, magicType.id(), magicType.magicClassID(), escapeSql(magicType.name()), magicType.magicLevel(), escapeSql(magicType.description()));
-            app.query(sql);
+            query(sql);
         }
 
         // 3. Spell
         Spell[] spells = SpellSeed.get();
         for (Spell spell : spells) {
-            int[] ranges = app.boolConvert(new boolean[]{spell.contact(), spell.shortRange(), spell.longRange(), spell.aoe()});
-
-            String sql = String.format("""
-                INSERT INTO spells (magic_type_id, name, target, contact, short_range, long_range, aoe, minimum_proficiency, cost, mechanism, reference) 
-                VALUES (%d, '%s', '%s', %d, %d, %d, %d, %d, %d, '%s', '%s');
-                """,
-                    spell.magicTypeID(),
-                    escapeSql(spell.name()),
-                    escapeSql(spell.target().getName()), // Pastikan target() punya .getName(), kalau String langsung spell.target()
-                    ranges[0], ranges[1], ranges[2], ranges[3],
-                    spell.minimumProficiency(),
-                    spell.cost(),
-                    escapeSql(spell.mechanism()),
-                    escapeSql(spell.reference())
-            );
-            app.query(sql);
+            pushSpell(spell);
         }
 
         // 4. Character
@@ -73,10 +59,39 @@ public class Main extends Connector {
                     character.age(),
                     escapeSql(character.description())
             );
-            app.query(sql);
+            query(sql);
         }
 
-        app.disconnect();
+        disconnect();
+    }
+
+    public boolean needsMigration() {
+        connect();
+        try (ResultSet rs = view("SELECT name FROM sqlite_master WHERE type='table' AND name='magic_class'")) {
+            return rs == null || !rs.next();
+        } catch (SQLException e) {
+            return true;
+        } finally {
+            disconnect();
+        }
+    }
+
+    private void pushSpell(Spell spell) {
+        int[] ranges = boolConvert(new boolean[]{spell.contact(), spell.shortRange(), spell.longRange(), spell.aoe()});
+
+        String sql = String.format("""
+            INSERT INTO spells (magic_type_id, name, target, contact, short_range, long_range, aoe, minimum_proficiency, cost, mechanism, reference) VALUES (%d, '%s', '%s', %d, %d, %d, %d, %d, %d, '%s', '%s');
+            """,
+                spell.magicTypeID(),
+                escapeSql(spell.name()),
+                escapeSql(spell.target().getName()),
+                ranges[0], ranges[1], ranges[2], ranges[3],
+                spell.minimumProficiency(),
+                spell.cost(),
+                escapeSql(spell.mechanism()),
+                escapeSql(spell.reference())
+        );
+        query(sql);
     }
 
     private int[] boolConvert(boolean[] bool) {

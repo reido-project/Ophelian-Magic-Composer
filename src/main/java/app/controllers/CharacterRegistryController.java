@@ -44,6 +44,9 @@ public class CharacterRegistryController implements Refreshable {
 
     @Override
     public void refresh() {
+        runtime.setCharacters(characterTable.fetch());
+        runtime.setMagicTypes(magicTypeTable.fetch());
+
         view.updateMagicTypeCombo(magicRegistryRuntime.magicTypes());
 
         Character selectedCharacter = runtime.getSelectedCharacter();
@@ -184,9 +187,6 @@ public class CharacterRegistryController implements Refreshable {
        }
 
        magicTypeTable.write(cmt);
-
-       runtime.setCharacters(characterTable.fetch());
-       runtime.setMagicTypes(magicTypeTable.fetch());
        globalRefresh.run();
     }
 }
