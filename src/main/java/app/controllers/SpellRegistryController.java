@@ -42,7 +42,7 @@ public class SpellRegistryController implements Refreshable {
     private void handleSpellSubmit(){
         MagicType type = (MagicType) view.getMagicTypeCombo().getSelectedItem();
 
-        if(type == null){
+        if(type == null || type.id() < 1){
             JOptionPane.showMessageDialog(view, "Please select a Magic Type", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }

@@ -1,24 +1,24 @@
 package app.views.panels;
 
-import app.models.types.CharacterMagicType;
+import app.models.types.MagicType;
+import app.models.types.Spell;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 public class CharacterSpellPanel extends JPanel {
-    private JLabel infoName;
-    private JLabel infoRole;
-    private JLabel infoAge;
-    private JComboBox<Object> magicTypeSelectCombo;
-    private JButton btnCharacterSpellSubmit;
-    private JPanel characterSpellScrollViewport;
+    private final JLabel infoName;
+    private final JLabel infoRole;
+    private final JLabel infoAge;
+
+    private final JComboBox<MagicType> magicTypeSelectCombo;
+    private final JButton btnCharacterSpellSubmit;
+
+    private final JPanel spellCheckboxPanel;
+    private final List<JCheckBox> spellCheckboxes = new ArrayList<>();
 
     public CharacterSpellPanel() {
         setLayout(null);
@@ -36,10 +36,10 @@ public class CharacterSpellPanel extends JPanel {
         lblInfoName.setBounds(12, 57, 54, 17);
         add(lblInfoName);
 
-        infoName = new JLabel("New label");
+        infoName = new JLabel("");
         infoName.setForeground(Color.WHITE);
         infoName.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        infoName.setBounds(66, 57, 60, 17);
+        infoName.setBounds(66, 57, 250, 17);
         add(infoName);
 
         JLabel lblInfoRole = new JLabel("Role:");
@@ -48,10 +48,10 @@ public class CharacterSpellPanel extends JPanel {
         lblInfoRole.setBounds(12, 78, 54, 17);
         add(lblInfoRole);
 
-        infoRole = new JLabel("New label");
+        infoRole = new JLabel("");
         infoRole.setForeground(Color.WHITE);
         infoRole.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        infoRole.setBounds(66, 78, 60, 17);
+        infoRole.setBounds(66, 78, 250, 17);
         add(infoRole);
 
         JLabel lblInfoAge = new JLabel("Age:");
@@ -60,10 +60,10 @@ public class CharacterSpellPanel extends JPanel {
         lblInfoAge.setBounds(12, 100, 54, 17);
         add(lblInfoAge);
 
-        infoAge = new JLabel("New label");
+        infoAge = new JLabel("");
         infoAge.setForeground(Color.WHITE);
         infoAge.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        infoAge.setBounds(66, 100, 60, 17);
+        infoAge.setBounds(66, 100, 250, 17);
         add(infoAge);
 
         JLabel lblSelectMagicType = new JLabel("Select Character's Magic Type");
@@ -76,22 +76,77 @@ public class CharacterSpellPanel extends JPanel {
         magicTypeSelectCombo.setBounds(74, 165, 217, 26);
         add(magicTypeSelectCombo);
 
-        JScrollPane characterSpellScrollPane = new JScrollPane();
-        characterSpellScrollPane.setBounds(12, 215, 341, 245);
-        add(characterSpellScrollPane);
+        // Spell Checkbox
+        spellCheckboxPanel = new JPanel();
+        spellCheckboxPanel.setLayout(new BoxLayout(spellCheckboxPanel, BoxLayout.Y_AXIS));
+        spellCheckboxPanel.setBackground(new Color(50, 43, 67));
 
-        characterSpellScrollViewport = new JPanel();
-        characterSpellScrollPane.setViewportView(characterSpellScrollViewport);
+        JScrollPane characterSpellScrollPane = new JScrollPane(spellCheckboxPanel);
+        characterSpellScrollPane.setBounds(12, 215, 341, 245);
+        characterSpellScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        characterSpellScrollPane.setBorder(BorderFactory.createEmptyBorder());
+        add(characterSpellScrollPane);
 
         btnCharacterSpellSubmit = new JButton("Submit");
         btnCharacterSpellSubmit.setBounds(12, 482, 340, 27);
         add(btnCharacterSpellSubmit);
     }
 
-    // Getters & Setters
-    public JComboBox<Object> getMagicTypeSelectCombo() { return magicTypeSelectCombo; }
-    public JLabel getInfoNameLabel() { return infoName; }
-    public JLabel getInfoRoleLabel() { return infoRole; }
-    public JLabel getInfoAgeLabel() { return infoAge; }
+    // Getters
+    public JComboBox<MagicType> getMagicTypeSelectCombo() { return magicTypeSelectCombo; }
+    public MagicType getMagicTypeSelectComboValue() { return (MagicType) magicTypeSelectCombo.getSelectedItem(); }
+
+    public List<Spell> getSelectedSpells() {
+        List<Spell> selectedSpells = new ArrayList<>();
+
+        for (JCheckBox checkbox : spellCheckboxes) {
+            if (checkbox.isSelected()) {
+                selectedSpells.add((Spell) checkbox.getClientProperty("spell"));
+            }
+        }
+
+        return selectedSpells;
+    }
+
+    // Setters
+    public void updateMagicTypeCombo(List<MagicType> magicTypes) {
+        magicTypeSelectCombo.setModel(new DefaultComboBoxModel<>(magicTypes.toArray(new MagicType[0])));
+    }
+
+    public void updateSpells(List<Spell> spells) {
+        spellCheckboxPanel.removeAll();
+        spellCheckboxes.clear();
+
+        for (Spell spell : spells) {
+            JCheckBox checkbox = new JCheckBox(spell.toString());
+            checkbox.putClientProperty("spell", spell);
+
+            checkbox.setForeground(Color.WHITE);
+            checkbox.setBackground(new Color(50, 43, 67));
+            checkbox.setFont(new Font("SansSerif", Font.PLAIN, 14));
+            checkbox.setFocusPainted(false);
+            checkbox.setOpaque(true);
+            checkbox.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            spellCheckboxes.add(checkbox);
+            spellCheckboxPanel.add(checkbox);
+        }
+
+        spellCheckboxPanel.revalidate();
+        spellCheckboxPanel.repaint();
+    }
+
+    public void updateSelectedSpells(List<Spell> spells) {
+        for (JCheckBox checkbox : spellCheckboxes) {
+            Spell spell = (Spell) checkbox.getClientProperty("spell");
+            checkbox.setSelected(spells.contains(spell));
+        }
+    }
+
+    public void updateInfoNameLabelText(String name) { infoName.setText(name); }
+    public void updateInfoRoleLabelText(String role) { infoRole.setText(role); }
+    public void updateInfoAgeLabelText(String age) { infoAge.setText(age); }
+
+    public void addMagicTypeComboListener(ActionListener actionListener) { magicTypeSelectCombo.addActionListener(actionListener); }
     public void addSubmitListener(ActionListener listener) { btnCharacterSpellSubmit.addActionListener(listener); }
 }

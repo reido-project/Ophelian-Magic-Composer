@@ -72,7 +72,7 @@ public class CharacterTable extends Database {
     public int fetchID(String name){
         connect();
 
-        String sql = String.format("SELECT id FROM character_magic_type WHERE name = '%s';", name);
+        String sql = String.format("SELECT id FROM characters WHERE name = '%s';", name);
 
         ResultSet rs = view(sql);
 

@@ -13,7 +13,7 @@ public class CharacterSpellTable extends Database {
         connect();
 
         String sql = String.format("""
-                    INSERT INTO character_spells (characted_id, spell_id) VALUES (%d, %d);
+                    INSERT INTO character_spells (character_id, spell_id) VALUES (%d, %d);
                     """, characterSpell.characterID(), characterSpell.spellID());
 
         query(sql);
@@ -26,7 +26,7 @@ public class CharacterSpellTable extends Database {
 
         for(CharacterSpell cs : characterSpells) {
             String sql = String.format("""
-                    INSERT INTO character_spells (characted_id, spell_id) VALUES (%d, %d);
+                    INSERT INTO character_spells (character_id, spell_id) VALUES (%d, %d);
                     """, cs.characterID(), cs.spellID());
 
             query(sql);
@@ -51,7 +51,7 @@ public class CharacterSpellTable extends Database {
         try{
             while (rs.next()){
                 int id = rs.getInt("id");
-                int charactedID = rs.getInt("characted_id");
+                int charactedID = rs.getInt("character_id");
                 int spellID = rs.getInt("spell_id");
 
                 result.add(new CharacterSpell(id, charactedID, spellID));
@@ -64,5 +64,14 @@ public class CharacterSpellTable extends Database {
         }
 
         return result;
+    }
+
+    public void deleteByCharacterID(int id){
+        connect();
+
+        String sql = String.format("DELETE FROM character_spells WHERE character_id = %d;", id);
+        query(sql);
+
+        disconnect();
     }
 }

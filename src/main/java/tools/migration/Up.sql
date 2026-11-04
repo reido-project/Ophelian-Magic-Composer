@@ -55,7 +55,7 @@ CREATE TABLE character_magic_types (
                                        id INTEGER PRIMARY KEY AUTOINCREMENT,
                                        character_id INTEGER NOT NULL,
                                        magic_type_id INTEGER NOT NULL,
-                                       slot TEXT NOT NULL CHECK(slot IN ('primary', 'secondary', 'tertiary')),
+                                       slot TEXT NOT NULL CHECK(slot IN ('Primary', 'Secondary', 'Tertiary')),
                                        proficiency INTEGER NOT NULL CHECK(proficiency > 0 AND proficiency <= 3),
                                        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                                        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,

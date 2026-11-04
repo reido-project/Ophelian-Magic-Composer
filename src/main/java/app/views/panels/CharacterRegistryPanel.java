@@ -25,7 +25,7 @@ public class CharacterRegistryPanel extends JPanel {
     private final JTextField secondaryProficiencyInput;
     private final JComboBox<MagicType> tertiaryMagicTypeCombo;
     private final JTextField tertiaryProficiencyInput;
-    private final JTextArea cDescriptionInput;
+    private final JTextArea descriptionInput;
     private final JButton btnCharacterSubmit;
 
     public CharacterRegistryPanel() {
@@ -120,9 +120,9 @@ public class CharacterRegistryPanel extends JPanel {
         lblCDescription.setBounds(12, 298, 91, 17);
         add(lblCDescription);
 
-        cDescriptionInput = new JTextArea();
-        cDescriptionInput.setBounds(115, 293, 237, 60);
-        add(cDescriptionInput);
+        descriptionInput = new JTextArea();
+        descriptionInput.setBounds(115, 293, 237, 60);
+        add(descriptionInput);
 
         btnCharacterSubmit = new JButton("Submit");
         btnCharacterSubmit.setBounds(12, 365, 340, 27);
@@ -139,7 +139,7 @@ public class CharacterRegistryPanel extends JPanel {
     public String getSecondaryProficiencyInputValue() { return secondaryProficiencyInput.getText(); }
     public MagicType getTertiaryMagicType() { return (MagicType) tertiaryMagicTypeCombo.getSelectedItem(); }
     public String getTertiaryProficiencyInputValue() { return tertiaryProficiencyInput.getText(); }
-    public String getDescriptionInputValue() { return cDescriptionInput.getText(); }
+    public String getDescriptionInputValue() { return descriptionInput.getText(); }
 
     // Setters
     public void updateMagicTypeCombo(List<MagicType> magicTypes) {
@@ -147,6 +147,17 @@ public class CharacterRegistryPanel extends JPanel {
         secondaryMagicTypeCombo.setModel(new DefaultComboBoxModel<>(magicTypes.toArray(new MagicType[0])));
         tertiaryMagicTypeCombo.setModel(new DefaultComboBoxModel<>(magicTypes.toArray(new MagicType[0])));
     }
+
+    public void updateCharacterNameInputValue(String name) { characterNameInput.setText(name); }
+    public void updateCharacterAgeInputValue(String age) { characterAgeInput.setText(age); }
+    public void updateCharacterRoleSelection(Role role) { characterRoleCombo.setSelectedItem(role); }
+    public void updatePrimaryMagicTypeSelection(MagicType magicType) { primaryMagicTypeCombo.setSelectedItem(magicType); }
+    public void updatePrimaryProficiencyInputValue(String proficiency) { primaryProficiencyInput.setText(proficiency); }
+    public void updateSecondaryMagicTypeSelection(MagicType magicType) { secondaryMagicTypeCombo.setSelectedItem(magicType); }
+    public void updateSecondaryProficiencyInputValue(String proficiency) { secondaryProficiencyInput.setText(proficiency); }
+    public void updateTertiaryMagicTypeSelection(MagicType magicType) { tertiaryMagicTypeCombo.setSelectedItem(magicType); }
+    public void updateTertiaryProficiencyInputValue(String proficiency) { tertiaryProficiencyInput.setText(proficiency); }
+    public void updateDescriptionInputValue(String description) { descriptionInput.setText(description); }
 
     public void addSubmitListener(ActionListener listener) { btnCharacterSubmit.addActionListener(listener); }
 }

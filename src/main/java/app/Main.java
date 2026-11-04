@@ -27,7 +27,7 @@ public class Main {
                 // Initialize Runtime Data
                 MagicRegistryRuntime magicRegistryRuntime = new MagicRegistryRuntime(magicClassTable.fetch(), magicTypeTable.fetch());
                 SpellRegistryRuntime spellRegistryRuntime = new SpellRegistryRuntime(spellTable.fetch());
-                CharacterRegistryRuntime characterRegistryRuntime = new CharacterRegistryRuntime(characterTable.fetch(),  characterMagicTypeTable.fetch());
+                CharacterRegistryRuntime characterRegistryRuntime = new CharacterRegistryRuntime(characterTable.fetch(), characterMagicTypeTable.fetch(), characterSpellTable.fetch());
 
                 // Initialize Panels
                 MagicRegistryPanel magicRegistryPanel = new MagicRegistryPanel();
@@ -62,11 +62,16 @@ public class Main {
                                 characterRegistryRuntime
                         ),
                         new CharacterSpellController(
-                                characterSpellPanel
+                                characterSpellPanel,
+                                characterRegistryRuntime,
+                                spellRegistryRuntime,
+                                magicRegistryRuntime,
+                                characterSpellTable
                         )
                 };
 
-                ActionController actionController = new ActionController(mainActionPanel, controllers);
+                // Initialize Action Control
+                new ActionController(mainActionPanel, controllers);
 
                 // Initialize Frame
                 ComposerFrame frame = new ComposerFrame(

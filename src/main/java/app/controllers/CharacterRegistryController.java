@@ -45,6 +45,52 @@ public class CharacterRegistryController implements Refreshable {
     @Override
     public void refresh() {
         view.updateMagicTypeCombo(magicRegistryRuntime.magicTypes());
+
+        Character selectedCharacter = runtime.getSelectedCharacter();
+
+        if(selectedCharacter != null){
+            // Selected Character
+            view.updateCharacterNameInputValue(selectedCharacter.getName());
+            view.updateCharacterAgeInputValue(String.valueOf(selectedCharacter.getAge()));
+            view.updateCharacterRoleSelection(selectedCharacter.getRole());
+            view.updateDescriptionInputValue(selectedCharacter.getDescription());
+
+            // Selected Character Magic Types
+            List<CharacterMagicType> magicList = runtime.getMagicTypesFromCharacterID(selectedCharacter.getID());
+            CharacterMagicType[] scMagicTypes = new CharacterMagicType[3];
+
+            for (int i = 0; i < Math.min(magicList.size(), 3); i++) {
+                scMagicTypes[i] = magicList.get(i);
+            }
+
+            view.updatePrimaryProficiencyInputValue("0");
+            view.updateSecondaryProficiencyInputValue("0");
+            view.updateTertiaryProficiencyInputValue("0");
+
+            if(scMagicTypes[0] != null){
+                view.updatePrimaryMagicTypeSelection(magicRegistryRuntime.getMagicTypeFromID(scMagicTypes[0].getMagicTypeID()));
+                view.updatePrimaryProficiencyInputValue(String.valueOf(scMagicTypes[0].getProficiency()));
+            }
+
+            if(scMagicTypes[1] != null){
+                view.updateSecondaryMagicTypeSelection(magicRegistryRuntime.getMagicTypeFromID(scMagicTypes[1].getMagicTypeID()));
+                view.updateSecondaryProficiencyInputValue(String.valueOf(scMagicTypes[1].getProficiency()));
+            }
+
+            if(scMagicTypes[2] != null){
+                view.updateTertiaryMagicTypeSelection(magicRegistryRuntime.getMagicTypeFromID(scMagicTypes[2].getMagicTypeID()));
+                view.updateTertiaryProficiencyInputValue(String.valueOf(scMagicTypes[2].getProficiency()));
+            }
+        }
+        else{
+            view.updateCharacterNameInputValue("");
+            view.updateCharacterAgeInputValue("");
+            view.updateDescriptionInputValue("");
+
+            view.updatePrimaryProficiencyInputValue("0");
+            view.updateSecondaryProficiencyInputValue("0");
+            view.updateTertiaryProficiencyInputValue("0");
+        }
     }
 
     @Override
@@ -103,7 +149,7 @@ public class CharacterRegistryController implements Refreshable {
 
        try{
            for(int i = 0; i < magicTypes.length; i++){
-               if(magicTypes[i] != null){
+               if(magicTypes[i] != null && magicTypes[i].id() > 0){
                    for (int j = i - 1; j >= 0; j--) {
                        if (magicTypes[j].equals(magicTypes[i])) {
                            throw new IllegalArgumentException("Magic type must be unique");
@@ -140,6 +186,7 @@ public class CharacterRegistryController implements Refreshable {
        magicTypeTable.write(cmt);
 
        runtime.setCharacters(characterTable.fetch());
+       runtime.setMagicTypes(magicTypeTable.fetch());
        globalRefresh.run();
     }
 }

@@ -48,6 +48,7 @@ public class CharacterMagicTypeTable extends Database {
                 """);
 
         if (rs == null) {
+            disconnect();
             return result;
         }
 
